@@ -27,9 +27,9 @@ export default function LoginForm({ className, onSubmit }: LoginFormProps) {
   return (
     <div className={`${styles.container} ${className}`}>
       <div className={styles.card}>
-        <Text variant='heading-1'>Login to Account</Text>
+        <Text variant='heading-1'>Sign in to STR Fleet Manager</Text>
         <Text variant='heading-4' color='text-secondary'>
-          Please enter your username and password to continue
+          Use your hawkBit administrator credentials to continue
         </Text>
         <Form method='post' onSubmit={handleSubmit(onSubmit)} style={{ gap: '40px' }}>
           <FormControl id='username' label='Username' errorMessage={errors.username?.message}>

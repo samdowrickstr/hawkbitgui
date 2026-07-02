@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import { Target } from '@/entities';
 import { TargetsService } from '@/services/targets-service';
+import { OtaFleetService } from '@/services/ota-fleet-service';
 import { useTargetsFiltersStore } from '@/stores/targets-filters-store';
 import { DEFAULT_PAGE_SIZE } from '@/utils/pagination';
 
@@ -54,7 +55,8 @@ export const useTargetsTableStore = create<TargetsTableState>((set) => ({
         filters: Object.values(filters),
         queryParams: { offset: page * size, limit: size, sort: 'name:ASC' },
       });
-      set({ targets, filteredTargets: targets, total: totalTargets });
+      const enrichedTargets = await OtaFleetService.enrichTargets(targets);
+      set({ targets: enrichedTargets, filteredTargets: enrichedTargets, total: totalTargets });
     } catch (error) {
       console.error('Failed to fetch targets', error);
     } finally {
@@ -70,7 +72,8 @@ export const useTargetsTableStore = create<TargetsTableState>((set) => ({
         filters: Object.values(filters),
         queryParams: { offset: page * size, limit: size, sort: 'name:ASC' },
       });
-      set({ targets, filteredTargets: targets, total: totalTargets });
+      const enrichedTargets = await OtaFleetService.enrichTargets(targets);
+      set({ targets: enrichedTargets, filteredTargets: enrichedTargets, total: totalTargets });
     } catch (error) {
       console.error('Failed to poll targets', error);
     }

@@ -6,6 +6,7 @@ import {
   CreateDistributionSetInput,
   CreateDistributionSetResponse,
   GetAssignedSoftwareModulesResponse,
+  GetAssignedTargetsResponse,
   GetDistributionSetsInput,
   GetDistributionSetsOutput,
   GetDistributionSetsResponse,
@@ -82,6 +83,11 @@ export class DistributionSetsService {
 
   static async getAssignedSoftwareModules(id: number | string): Promise<SoftwareModule[]> {
     const response = await axiosInstance.get<GetAssignedSoftwareModulesResponse>(`/distributionsets/${id}/assignedSM`);
+    return response.data.content;
+  }
+
+  static async getAssignedTargets(id: number | string) {
+    const response = await axiosInstance.get<GetAssignedTargetsResponse>(`/distributionsets/${id}/assignedTargets`);
     return response.data.content;
   }
 

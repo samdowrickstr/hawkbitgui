@@ -25,7 +25,7 @@ export default function SoftwareModuleTypeForm({ defaultValues, onSubmit, onCanc
     handleSubmit,
     formState: { errors },
   } = useForm<SoftwareModuleTypeFormData>({
-    defaultValues: { colour: '#562563', maxAssignments: 1, ...defaultValues },
+    defaultValues: { colour: '#1aa6c0', maxAssignments: 1, ...defaultValues },
     resolver: zodResolver(SoftwareModuleTypeFormSchema),
   });
 

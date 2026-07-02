@@ -25,7 +25,7 @@ export default function DistributionSetTagForm({ onSubmit, onCancel, defaultValu
     formState: { errors },
   } = useForm<DistributionSetTagFormData>({
     defaultValues: {
-      color: '#562563',
+      color: '#1aa6c0',
       ...defaultValues,
     },
     resolver: zodResolver(DistributionSetTagSchema),

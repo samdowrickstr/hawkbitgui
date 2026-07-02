@@ -6,7 +6,10 @@
     display: flex;
 
     .logoSection {
-        background-color: $secondary-color;
+        background:
+            radial-gradient(circle at 25% 18%, rgba(51, 184, 220, 0.28), transparent 30%),
+            radial-gradient(circle at 82% 72%, rgba(19, 192, 168, 0.18), transparent 34%),
+            linear-gradient(145deg, #171f30 0%, #090b12 100%);
         width: 50%;
         padding: 50px;
         display: flex;
@@ -17,9 +20,34 @@
         .logoContainer {
             height: 100%;
             display: flex;
+            flex-direction: column;
             align-items: center;
             justify-content: center;
+
+            gap: 18px;
+
             .logo {
+                max-width: 260px;
+                height: auto;
+            }
+
+            h1 {
+                margin: 10px 0 0;
+                color: $bright-text-color;
+                font-size: 38px;
+                line-height: 1.1;
+            }
+
+            p {
+                margin: 0;
+                color: #9aa6b2;
+                font-size: 18px;
+            }
+        }
+
+        .policiesSection {
+            div {
+                color: #9aa6b2;
             }
         }
     }
@@ -55,9 +83,11 @@
 
             color: $link-color;
             a {
+                color: inherit;
             }
             p {
                 margin: 0;
+                color: inherit;
             }
         }
     }

@@ -6,8 +6,8 @@ import { authOptions } from '@/lib/auth-options';
 import { Toaster } from 'react-hot-toast';
 
 export const metadata: Metadata = {
-  title: 'Hawkbit',
-  description: 'Hawkbit',
+  title: 'STR Fleet Manager',
+  description: 'STR multi-product OTA fleet management',
 };
 
 export default async function RootLayout({

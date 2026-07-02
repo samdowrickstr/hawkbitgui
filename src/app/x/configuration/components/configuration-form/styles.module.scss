@@ -48,3 +48,37 @@
     gap: 12px;
   }
 }
+
+.authSummary {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+  max-width: 900px;
+  margin-bottom: 16px;
+}
+
+.authItem {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 14px;
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 2px 16px 0 rgba(60, 60, 100, 0.08);
+}
+
+.authLabel {
+  color: $secondary-text-color;
+  font-size: 13px;
+}
+
+.authValue {
+  color: $primary-text-color;
+  font-weight: 700;
+}
+
+@media (max-width: 1100px) {
+  .authSummary {
+    grid-template-columns: 1fr;
+  }
+}

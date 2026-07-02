@@ -9,11 +9,11 @@ export const TargetStatus = {
 export type TargetStatus = (typeof TargetStatus)[keyof typeof TargetStatus];
 
 export const TargetStatusColors: Record<TargetStatus, string> = {
-  in_sync: '#6ab252',
-  pending: '#dfb322',
-  error: '#b92626',
-  registered: '#2635b9',
-  unknown: '#b2b4b4',
+  in_sync: '#2ee6a0',
+  pending: '#f4c543',
+  error: '#ef5e5e',
+  registered: '#33b8dc',
+  unknown: '#9aa6b2',
 };
 
 export interface Target {
@@ -42,6 +42,19 @@ export interface Target {
   targetType?: number;
   targetTypeName?: string;
   autoConfirmActive?: boolean;
+  ota?: {
+    product?: string;
+    os?: string;
+    servicePack?: string;
+    kernel?: string;
+    hwrev?: string;
+    stm32?: string;
+    pic?: string;
+    pcb?: string;
+    attributes?: Record<string, string>;
+    installedDistribution?: string;
+    assignedDistribution?: string;
+  };
 }
 
 export function isTargetStatus(value: any): value is TargetStatus {

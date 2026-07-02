@@ -60,6 +60,16 @@ export default function TargetTable({
         ),
       }),
       columnHelper.accessor('updateStatus', statusAccessor),
+      columnHelper.accessor((row) => row.ota?.product ?? '-', {
+        id: 'product',
+        header: 'Product',
+        cell: (info) => info.getValue(),
+      }),
+      columnHelper.accessor((row) => row.ota?.servicePack ?? row.ota?.installedDistribution ?? '-', {
+        id: 'servicePack',
+        header: 'Service Pack',
+        cell: (info) => info.getValue(),
+      }),
       columnHelper.display({
         id: 'actions',
         header: 'Actions',
@@ -93,6 +103,46 @@ export default function TargetTable({
       }),
       columnHelper.accessor('controllerId', {
         header: 'Controller Id',
+        cell: (info) => info.getValue(),
+      }),
+      columnHelper.accessor((row) => row.ota?.product ?? '-', {
+        id: 'product',
+        header: 'Product',
+        cell: (info) => info.getValue(),
+      }),
+      columnHelper.accessor((row) => row.ota?.servicePack ?? '-', {
+        id: 'servicePack',
+        header: 'Service Pack',
+        cell: (info) => info.getValue(),
+      }),
+      columnHelper.accessor((row) => row.ota?.os ?? '-', {
+        id: 'os',
+        header: 'OS',
+        cell: (info) => info.getValue(),
+      }),
+      columnHelper.accessor((row) => row.ota?.kernel ?? '-', {
+        id: 'kernel',
+        header: 'Kernel',
+        cell: (info) => info.getValue(),
+      }),
+      columnHelper.accessor((row) => row.ota?.hwrev ?? '-', {
+        id: 'hwrev',
+        header: 'HW Rev',
+        cell: (info) => info.getValue(),
+      }),
+      columnHelper.accessor((row) => [row.ota?.stm32, row.ota?.pic, row.ota?.pcb].filter(Boolean).join(' / ') || '-', {
+        id: 'firmware',
+        header: 'Firmware',
+        cell: (info) => info.getValue(),
+      }),
+      columnHelper.accessor((row) => row.ota?.installedDistribution ?? '-', {
+        id: 'installedDistribution',
+        header: 'Installed',
+        cell: (info) => info.getValue(),
+      }),
+      columnHelper.accessor((row) => row.ota?.assignedDistribution ?? '-', {
+        id: 'assignedDistribution',
+        header: 'Assigned',
         cell: (info) => info.getValue(),
       }),
       columnHelper.accessor('createdAt', {

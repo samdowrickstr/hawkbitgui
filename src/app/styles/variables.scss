@@ -1,24 +1,24 @@
-$secondary-color: #f2f4fc;
-$link-color: #797a7c;
+$secondary-color: #eef7fb;
+$link-color: #60717e;
 $error-color: #f44336;
-$accent-color: #562563;
-$primary-text-color: #202224;
-$light-primary-text-color: #49454f;
-$secondary-text-color: #a6a6a6;
-$bright-text-color: #eef2ff;
+$accent-color: #1aa6c0;
+$primary-text-color: #172433;
+$light-primary-text-color: #405261;
+$secondary-text-color: #7c8a96;
+$bright-text-color: #f3f6f8;
 $text-color-inverse: #ffffff;
-$tooltip-background-color: #4A4A4AE6;
+$tooltip-background-color: #172433e6;
 
-$status-in-sync: #6ab252;
-$status-error: #b92626;
-$status-pending: #dfb322;
-$status-registered: #2635b9;
-$status-unknown: #b2b4b4;
-$background-disabled-color: #f5f6fa;
-$text-disabled-color: #707070;
-$border-disabled-color: #e4e7f2;
-$border-primary-color: #707070;
-$error-dark-color: #b92626;
+$status-in-sync: #2ee6a0;
+$status-error: #ef5e5e;
+$status-pending: #f4c543;
+$status-registered: #33b8dc;
+$status-unknown: #9aa6b2;
+$background-disabled-color: #f4f7f9;
+$text-disabled-color: #758491;
+$border-disabled-color: #dce8ee;
+$border-primary-color: #8093a0;
+$error-dark-color: #c94040;
 
 $status-finished: $status-in-sync; // #6ab252
 $status-running: $status-registered; // #2635b9
@@ -31,5 +31,5 @@ $status-downloaded: $status-in-sync; // #6ab252
 $status-retrieved: $status-in-sync; // #6ab252
 $status-cancel-rejected: $status-error; // #b92626
 
-$icon-primary-color: #898B90;
-$icon-disabled-color: #C8C6C7;
+$icon-primary-color: #60717e;
+$icon-disabled-color: #bac7ce;

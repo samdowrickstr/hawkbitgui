@@ -3,6 +3,7 @@ import ConfigurationForm, { FormStateType } from '@/app/x/configuration/componen
 import { HawkbitSystemConfigKey, HawkbitSystemConfiguration } from '@/services/system-configuration-service.types';
 import { SystemConfigurationService } from '@/services/system-configuration-service';
 import { handleErrorWithToast } from '@/utils/handle-error-with-toast';
+import styles from '@/app/x/configuration/components/configuration-form/styles.module.scss';
 
 function mapSystemConfigToFormState(configs: HawkbitSystemConfiguration): FormStateType {
   return {
@@ -134,5 +135,29 @@ export default function ConfigurationFormContainer() {
     }
   };
 
-  return <ConfigurationForm initialValues={initialValues ?? undefined} onSubmit={handleSubmit} loading={isLoading} />;
+  return (
+    <>
+      {initialValues && (
+        <div className={styles.authSummary}>
+          <div className={styles.authItem}>
+            <span className={styles.authLabel}>Gateway auth</span>
+            <span className={styles.authValue}>{initialValues.authentication.allowGateway.enabled ? 'Enabled' : 'Disabled'}</span>
+          </div>
+          <div className={styles.authItem}>
+            <span className={styles.authLabel}>Gateway token</span>
+            <span className={styles.authValue}>{initialValues.authentication.allowGateway.gatewayToken || '-'}</span>
+          </div>
+          <div className={styles.authItem}>
+            <span className={styles.authLabel}>Target token auth</span>
+            <span className={styles.authValue}>{initialValues.authentication.allowTokenAuth ? 'Enabled' : 'Disabled'}</span>
+          </div>
+          <div className={styles.authItem}>
+            <span className={styles.authLabel}>Anonymous downloads</span>
+            <span className={styles.authValue}>{initialValues.authentication.allowDownloadWithoutCreds.enabled ? 'Enabled' : 'Disabled'}</span>
+          </div>
+        </div>
+      )}
+      <ConfigurationForm initialValues={initialValues ?? undefined} onSubmit={handleSubmit} loading={isLoading} />
+    </>
+  );
 }

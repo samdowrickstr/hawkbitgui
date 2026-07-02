@@ -1,0 +1,199 @@
+@use 'src/app/styles/variables' as *;
+
+.page {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  gap: 24px;
+}
+
+.toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  margin-top: -12px;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 20px;
+}
+
+.panel {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 24px;
+  background: #fff;
+  border: 1px solid $border-disabled-color;
+  border-radius: 16px;
+  box-shadow: 0 4px 10px rgb(0 0 0 / 10%);
+}
+
+.panelHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.panelTitle {
+  margin: 0;
+  color: $light-primary-text-color;
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.table {
+  display: grid;
+  gap: 1px;
+  overflow: hidden;
+  border: 1px solid $border-disabled-color;
+  border-radius: 8px;
+  background: $border-disabled-color;
+}
+
+.row {
+  display: grid;
+  grid-template-columns: 150px minmax(180px, 1fr) minmax(320px, 2fr) 130px 90px;
+  align-items: center;
+  gap: 12px;
+  min-height: 48px;
+  padding: 10px 14px;
+  background: #fff;
+}
+
+.setTypeRow {
+  grid-template-columns: 150px minmax(220px, 1fr) minmax(240px, 1fr) minmax(240px, 1fr) 90px;
+}
+
+.twoColumnRow {
+  grid-template-columns: 170px minmax(240px, 1fr);
+}
+
+.head {
+  min-height: 40px;
+  color: $secondary-text-color;
+  font-size: 13px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.key {
+  color: $primary-text-color;
+  font-family: monospace;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.muted {
+  color: $secondary-text-color;
+}
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  max-width: 100%;
+  padding: 4px 8px;
+  color: $light-primary-text-color;
+  background: $secondary-color;
+  border: 1px solid $border-disabled-color;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.swatch {
+  width: 18px;
+  height: 18px;
+  border: 1px solid $border-primary-color;
+  border-radius: 4px;
+}
+
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.segmentValue {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.formGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.modulePickers {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.picker {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 14px;
+  border: 1px solid $border-disabled-color;
+  border-radius: 8px;
+}
+
+.pickerTitle {
+  color: $light-primary-text-color;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.checkRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: $primary-text-color;
+}
+
+.formActions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.error {
+  color: $error-color;
+  font-size: 14px;
+}
+
+@media (max-width: 1100px) {
+  .row,
+  .setTypeRow,
+  .twoColumnRow {
+    grid-template-columns: 1fr;
+  }
+
+  .head {
+    display: none;
+  }
+
+  .formGrid,
+  .modulePickers {
+    grid-template-columns: 1fr;
+  }
+}

@@ -22,6 +22,7 @@ export default function TargetTableContainer() {
   const total = useTargetsTableStore((state) => state.total);
   const setPage = useTargetsTableStore((state) => state.setPage);
   const targetsTableStore = useTargetsTableStore();
+  const [selectedProduct, setSelectedProduct] = useState<string>('all');
   const setTargetActionTargetId = useTargetActionsTableStore((state) => state.setSelectedTargetId);
 
   const [isTargetInfoModalOpen, setIsTargetInfoModalOpen] = useState(false);
@@ -53,10 +54,48 @@ export default function TargetTableContainer() {
 
   useTargetsPolling();
 
+  const productOptions = Array.from(new Set(filteredTargets.map((target) => target.ota?.product).filter((product): product is string => !!product))).sort();
+  const visibleTargets = selectedProduct === 'all' ? filteredTargets : filteredTargets.filter((target) => target.ota?.product === selectedProduct);
+
   return (
     <>
+      {productOptions.length > 0 && (
+        <div style={{ display: 'flex', gap: 8, marginBottom: 12, flexWrap: 'wrap' }}>
+          <button
+            type='button'
+            onClick={() => setSelectedProduct('all')}
+            style={{
+              border: '1px solid #dce8ee',
+              borderRadius: 999,
+              padding: '4px 10px',
+              background: selectedProduct === 'all' ? '#172433' : '#eef7fb',
+              color: selectedProduct === 'all' ? '#fff' : '#405261',
+              cursor: 'pointer',
+            }}
+          >
+            All products
+          </button>
+          {productOptions.map((product) => (
+            <button
+              type='button'
+              key={product}
+              onClick={() => setSelectedProduct(product)}
+              style={{
+                border: '1px solid #dce8ee',
+                borderRadius: 999,
+                padding: '4px 10px',
+                background: selectedProduct === product ? '#172433' : '#eef7fb',
+                color: selectedProduct === product ? '#fff' : '#405261',
+                cursor: 'pointer',
+              }}
+            >
+              {product}
+            </button>
+          ))}
+        </div>
+      )}
       <TargetTable
-        targets={filteredTargets.map((target) => ({
+        targets={visibleTargets.map((target) => ({
           ...target,
           status: 'Error',
         }))}

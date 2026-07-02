@@ -12,6 +12,8 @@ import { usePathname } from 'next/navigation';
 import ClickIcon from '@/app/components/icons/click-icon';
 import WebIcon from '@/app/components/icons/web-icon';
 import GearIcon from '@/app/components/icons/gear-icon';
+import FolderIcon from '@/app/components/icons/folder-icon';
+import CircleDotIcon from '@/app/components/icons/circle-dot-icon';
 import { signOut, useSession } from 'next-auth/react';
 import { AppRoutes } from '@/utils/routes';
 
@@ -22,8 +24,11 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   const { data: session } = useSession();
 
   const navItems = [
+    { href: '/x/fleet', label: 'Fleet', icon: CircleDotIcon },
     { href: '/x/deployment', label: 'Deployment', icon: RocketIcon },
     { href: '/x/rollout', label: 'Rollout', icon: RolloutIcon },
+    { href: '/x/product-structure', label: 'Products', icon: FolderIcon },
+    { href: '/x/service-packs', label: 'Service Packs', icon: UploadIcon },
     { href: '/x/target-filters', label: 'Target filters', icon: ClickIcon },
     { href: '/x/distributions', label: 'Distributions', icon: WebIcon },
     { href: '/x/upload', label: 'Upload', icon: UploadIcon },
@@ -38,13 +43,20 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       <aside className={`${styles.sidebar} ${sidebarOpen ? '' : styles.collapsed}`}>
         <div className={styles.sidebarHeader}>
           <a className={styles.brand}>
-            <Image width={93} height={42} src={'/images/hawkbit-logo.svg'} alt={'Hawkbit logo'} />
+            <Image width={112} height={46} src={'/images/str-logo-dark.svg'} alt={'STR logo'} />
           </a>
         </div>
 
         <nav className={styles.nav}>
           {navItems.map((item, i) => (
-            <NavItem href={item.href} key={i} icon={item.icon} expanded={sidebarOpen} label={item.label} isActive={item.href === pathname} />
+            <NavItem
+              href={item.href}
+              key={i}
+              icon={item.icon}
+              expanded={sidebarOpen}
+              label={item.label}
+              isActive={pathname === item.href || pathname.startsWith(`${item.href}/`)}
+            />
           ))}
         </nav>
 
@@ -62,6 +74,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           </div>
 
           <div className={styles.headerActions}>
+            <span className={styles.productName}>STR OTA Fleet</span>
             <div className={styles.profile}>{userInitial}</div>
           </div>
         </header>
