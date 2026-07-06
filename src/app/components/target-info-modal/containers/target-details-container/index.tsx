@@ -8,6 +8,15 @@ export default function TargetDetailsContainer() {
     return (
         <TargetDetails
             controllerId={selectedTarget?.controllerId}
+            lastPoll={
+                selectedTarget?.pollStatus?.lastRequestAt
+                    ? new Date(selectedTarget.pollStatus.lastRequestAt)
+                    : selectedTarget?.lastControllerRequestAt
+                      ? new Date(selectedTarget.lastControllerRequestAt)
+                      : undefined
+            }
+            nextExpectedPoll={selectedTarget?.pollStatus?.nextExpectedRequestAt ? new Date(selectedTarget.pollStatus.nextExpectedRequestAt) : undefined}
+            pollOverdue={selectedTarget?.pollStatus?.overdue}
             address={selectedTarget?.address}
             description={selectedTarget?.description}
             securityToken={selectedTarget?.securityToken}
