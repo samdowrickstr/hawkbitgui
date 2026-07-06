@@ -21,7 +21,7 @@ export default function Login() {
         <LoginFormContainer className={styles.form} />
         <div className={styles.policiesSection}>
           <div>
-            <p>STR Subsea OTA management</p>
+            <p>STR OTA management</p>
           </div>
         </div>
       </div>
