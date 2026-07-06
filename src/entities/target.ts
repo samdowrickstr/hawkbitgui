@@ -46,8 +46,14 @@ export interface Target {
     product?: string;
     os?: string;
     servicePack?: string;
+    backend?: string;
+    dashboard?: string;
+    webui?: string;
+    watchdog?: string;
+    pilot?: string;
     kernel?: string;
     hwrev?: string;
+    abSlot?: string;
     stm32?: string;
     pic?: string;
     pcb?: string;

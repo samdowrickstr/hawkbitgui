@@ -52,6 +52,23 @@
   gap: 8px;
 }
 
+.componentList {
+  display: grid;
+  gap: 14px;
+}
+
+.componentGroup {
+  display: grid;
+  gap: 8px;
+}
+
+.componentName {
+  color: $secondary-text-color;
+  font-size: 13px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
 .listRow {
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;

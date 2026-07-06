@@ -120,9 +120,39 @@ export default function TargetTable({
         header: 'OS',
         cell: (info) => info.getValue(),
       }),
+      columnHelper.accessor((row) => row.ota?.dashboard ?? '-', {
+        id: 'dashboard',
+        header: 'Dash',
+        cell: (info) => info.getValue(),
+      }),
+      columnHelper.accessor((row) => row.ota?.backend ?? '-', {
+        id: 'backend',
+        header: 'Backend',
+        cell: (info) => info.getValue(),
+      }),
+      columnHelper.accessor((row) => row.ota?.webui ?? '-', {
+        id: 'webui',
+        header: 'Web UI',
+        cell: (info) => info.getValue(),
+      }),
+      columnHelper.accessor((row) => row.ota?.watchdog ?? '-', {
+        id: 'watchdog',
+        header: 'Watchdog',
+        cell: (info) => info.getValue(),
+      }),
+      columnHelper.accessor((row) => row.ota?.pilot ?? '-', {
+        id: 'pilot',
+        header: 'Pilot',
+        cell: (info) => info.getValue(),
+      }),
       columnHelper.accessor((row) => row.ota?.kernel ?? '-', {
         id: 'kernel',
         header: 'Kernel',
+        cell: (info) => info.getValue(),
+      }),
+      columnHelper.accessor((row) => row.ota?.abSlot ?? '-', {
+        id: 'abSlot',
+        header: 'Slot',
         cell: (info) => info.getValue(),
       }),
       columnHelper.accessor((row) => row.ota?.hwrev ?? '-', {

@@ -12,6 +12,7 @@ export type FleetSummary = {
   productCounts: Record<string, number>;
   statusCounts: Record<string, number>;
   servicePackCounts: Record<string, number>;
+  componentVersionCounts: Record<string, Record<string, number>>;
   failedTargets: EnrichedTarget[];
   pendingTargets: EnrichedTarget[];
   auth: {
@@ -78,8 +79,14 @@ export class OtaFleetService {
             product: getAttribute(attributes, 'product'),
             os: getAttribute(attributes, 'os', 'rootfs'),
             servicePack: getAttribute(attributes, 'service-pack', 'service_pack', 'servicePack'),
+            backend: getAttribute(attributes, 'backend', 'str-backend'),
+            dashboard: getAttribute(attributes, 'dashboard', 'frontend', 'rd178-dash'),
+            webui: getAttribute(attributes, 'webui', 'web-ui', 'str-webui'),
+            watchdog: getAttribute(attributes, 'watchdog', 'str-watchdog'),
+            pilot: getAttribute(attributes, 'pilot', 'str-pilot'),
             kernel: getAttribute(attributes, 'kernel'),
             hwrev: getAttribute(attributes, 'hwrev', 'hardware-revision', 'hardwareRevision'),
+            abSlot: getAttribute(attributes, 'ab-slot', 'ab_slot', 'activeSlot'),
             stm32: getAttribute(attributes, 'stm32', 'stm32-fw', 'stm32_fw'),
             pic: getAttribute(attributes, 'pic', 'pic-fw', 'pic_fw'),
             pcb: getAttribute(attributes, 'pcb', 'pcb-fw', 'pcb_fw'),
@@ -110,6 +117,21 @@ export class OtaFleetService {
     const productCounts: Record<string, number> = {};
     const statusCounts: Record<string, number> = {};
     const servicePackCounts: Record<string, number> = {};
+    const componentVersionCounts: Record<string, Record<string, number>> = {
+      OS: {},
+      Backend: {},
+      Dashboard: {},
+      'Web UI': {},
+      Watchdog: {},
+      Pilot: {},
+      Kernel: {},
+      Slot: {},
+    };
+
+    const increment = (bucket: Record<string, number>, value?: string) => {
+      const key = value || 'Unknown';
+      bucket[key] = (bucket[key] ?? 0) + 1;
+    };
 
     targets.forEach((target) => {
       const product = target.ota.product ?? 'Unknown';
@@ -119,6 +141,14 @@ export class OtaFleetService {
       productCounts[product] = (productCounts[product] ?? 0) + 1;
       statusCounts[status] = (statusCounts[status] ?? 0) + 1;
       servicePackCounts[servicePack] = (servicePackCounts[servicePack] ?? 0) + 1;
+      increment(componentVersionCounts.OS, target.ota.os);
+      increment(componentVersionCounts.Backend, target.ota.backend);
+      increment(componentVersionCounts.Dashboard, target.ota.dashboard);
+      increment(componentVersionCounts['Web UI'], target.ota.webui);
+      increment(componentVersionCounts.Watchdog, target.ota.watchdog);
+      increment(componentVersionCounts.Pilot, target.ota.pilot);
+      increment(componentVersionCounts.Kernel, target.ota.kernel);
+      increment(componentVersionCounts.Slot, target.ota.abSlot);
     });
 
     return {
@@ -127,6 +157,7 @@ export class OtaFleetService {
       productCounts,
       statusCounts,
       servicePackCounts,
+      componentVersionCounts,
       failedTargets: targets.filter((target) => target.updateStatus === 'error'),
       pendingTargets: targets.filter((target) => target.updateStatus === 'pending'),
       auth: {

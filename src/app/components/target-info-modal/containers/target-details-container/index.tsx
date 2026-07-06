@@ -24,6 +24,17 @@ export default function TargetDetailsContainer() {
             createdBy={selectedTarget?.createdBy}
             lastModifiedAt={selectedTarget?.lastModifiedAt ? new Date(selectedTarget.lastModifiedAt) : undefined}
             lastModifiedBy={selectedTarget?.lastModifiedBy}
+            product={selectedTarget?.ota?.product}
+            os={selectedTarget?.ota?.os}
+            servicePack={selectedTarget?.ota?.servicePack}
+            backend={selectedTarget?.ota?.backend}
+            dashboard={selectedTarget?.ota?.dashboard}
+            webui={selectedTarget?.ota?.webui}
+            watchdog={selectedTarget?.ota?.watchdog}
+            pilot={selectedTarget?.ota?.pilot}
+            kernel={selectedTarget?.ota?.kernel}
+            hwrev={selectedTarget?.ota?.hwrev}
+            abSlot={selectedTarget?.ota?.abSlot}
         />
     );
 }

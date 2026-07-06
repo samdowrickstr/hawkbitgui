@@ -14,6 +14,17 @@ export default function TargetDetails({
     createdBy,
     lastModifiedAt,
     lastModifiedBy,
+    product,
+    os,
+    servicePack,
+    backend,
+    dashboard,
+    webui,
+    watchdog,
+    pilot,
+    kernel,
+    hwrev,
+    abSlot,
 }: {
     controllerId?: string;
     lastPoll?: Date;
@@ -26,6 +37,17 @@ export default function TargetDetails({
     createdBy?: string;
     lastModifiedAt?: Date;
     lastModifiedBy?: string;
+    product?: string;
+    os?: string;
+    servicePack?: string;
+    backend?: string;
+    dashboard?: string;
+    webui?: string;
+    watchdog?: string;
+    pilot?: string;
+    kernel?: string;
+    hwrev?: string;
+    abSlot?: string;
 }) {
     const items = [
         { title: 'Controller ID', value: controllerId },
@@ -39,6 +61,17 @@ export default function TargetDetails({
         { title: 'Created By', value: createdBy },
         { title: 'Last Modified At', value: lastModifiedAt?.toLocaleString() },
         { title: 'Last Modified By', value: lastModifiedBy },
+        { title: 'Product', value: product },
+        { title: 'OS', value: os },
+        { title: 'Service Pack', value: servicePack },
+        { title: 'Dashboard', value: dashboard },
+        { title: 'Backend', value: backend },
+        { title: 'Web UI', value: webui },
+        { title: 'Watchdog', value: watchdog },
+        { title: 'Pilot', value: pilot },
+        { title: 'Kernel', value: kernel },
+        { title: 'Hardware Rev', value: hwrev },
+        { title: 'Active Slot', value: abSlot },
     ];
 
     return <ListWithTitle title={'Details'} items={items} />;

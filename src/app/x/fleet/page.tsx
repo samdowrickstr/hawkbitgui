@@ -58,6 +58,9 @@ export default function FleetPage() {
           <Panel title='Service Pack Versions'>
             <KeyValueList values={summary?.servicePackCounts ?? {}} empty='No service-pack reports yet' />
           </Panel>
+          <Panel title='Component Versions'>
+            <ComponentVersionList values={summary?.componentVersionCounts ?? {}} />
+          </Panel>
           <Panel title='Device Authentication'>
             <div className={styles.list}>
               <div className={styles.listRow}>
@@ -117,6 +120,25 @@ function KeyValueList({ values, empty }: { values: Record<string, number>; empty
         <div className={styles.listRow} key={key}>
           <span className={styles.key}>{key}</span>
           <span>{value}</span>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function ComponentVersionList({ values }: { values: Record<string, Record<string, number>> }) {
+  const groups = Object.entries(values).filter(([, counts]) => Object.keys(counts).length > 0);
+
+  if (!groups.length) {
+    return <span className={styles.muted}>No component reports yet</span>;
+  }
+
+  return (
+    <div className={styles.componentList}>
+      {groups.map(([component, counts]) => (
+        <div className={styles.componentGroup} key={component}>
+          <span className={styles.componentName}>{component}</span>
+          <KeyValueList values={counts} empty='No reports' />
         </div>
       ))}
     </div>

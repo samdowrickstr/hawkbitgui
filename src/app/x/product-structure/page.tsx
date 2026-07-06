@@ -459,7 +459,21 @@ export default function ProductStructurePage() {
             ))}
             <div className={`${styles.row} ${styles.twoColumnRow}`}>
               <span>Reported attributes</span>
-              <ChipList items={['product', 'os', 'service-pack', 'kernel', 'hwrev']} />
+              <ChipList
+                items={[
+                  'product',
+                  'os',
+                  'service-pack',
+                  'backend',
+                  'dashboard',
+                  'webui',
+                  'watchdog',
+                  'pilot',
+                  'kernel',
+                  'ab-slot',
+                  'hwrev',
+                ]}
+              />
             </div>
           </div>
         </section>
