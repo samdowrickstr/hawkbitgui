@@ -93,7 +93,7 @@ export class TargetsService {
 
   static async getInstalledDistribution(controllerId: string): Promise<GetInstalledDistributionOutput> {
     try {
-      const response = await axiosInstance.get<GetInstalledDistributionResponse>(`/targets/${controllerId}/installedDs`);
+      const response = await axiosInstance.get<GetInstalledDistributionResponse>(`/targets/${controllerId}/installedDS`);
       return response.data;
     } catch (error) {
       console.error('Failed to get Installed Distribution', error);
@@ -103,7 +103,7 @@ export class TargetsService {
 
   static async getAssignedDistribution(controllerId: string): Promise<GetAssignedDistributionOutput> {
     try {
-      const response = await axiosInstance.get<GetAssignedDistributionResponse>(`/targets/${controllerId}/assignedDs`);
+      const response = await axiosInstance.get<GetAssignedDistributionResponse>(`/targets/${controllerId}/assignedDS`);
       return response.data;
     } catch (error) {
       console.error('Failed to get Assigned Distribution', error);

@@ -10,6 +10,8 @@ import TrashIcon from '@/app/components/icons/trash-icon';
 import dayjs from 'dayjs';
 import BlockIcon from '@/app/components/icons/block-icon';
 import type { Pagination } from '@/types/utils/pagination';
+import TooltipIconButton from '@/app/components/tooltip-icon-button';
+import TouchIcon from '@/app/components/icons/touch-icon';
 
 export type DistributionsTableProps = {
   isLoading?: boolean;
@@ -18,7 +20,9 @@ export type DistributionsTableProps = {
   distributions?: Distribution[];
   onInvalidateClick?: (distribution: Distribution) => void;
   onDeleteClick?: (distribution: Distribution) => void;
+  onAssignClick?: (distribution: Distribution) => void;
   onPinClick?: (distribution: Distribution) => void;
+  canAssign?: boolean;
   pagination?: Pagination;
   onPageChange?: (page: number) => void;
 };
@@ -29,6 +33,8 @@ export default function DistributionsTable({
   distributions = [],
   onInvalidateClick,
   onDeleteClick,
+  onAssignClick,
+  canAssign = false,
   // onPinClick,
   isLoading,
   pagination,
@@ -59,6 +65,14 @@ export default function DistributionsTable({
             {/*<IconButton height={'30px'} width={'30px'} onClick={() => onPinClick?.(info.row.original)}>*/}
             {/*  <PinIcon />*/}
             {/*</IconButton>*/}
+            <TooltipIconButton
+              tooltipContent={canAssign ? 'Assign to selected target' : 'Select a target first'}
+              icon={<TouchIcon width={20} height={20} />}
+              iconButtonProps={{
+                disabled: !canAssign,
+                onClick: () => onAssignClick?.(info.row.original),
+              }}
+            />
             <IconButton height={'30px'} width={'30px'} onClick={() => onInvalidateClick?.(info.row.original)}>
               <BlockIcon width={20} height={20} />
             </IconButton>
@@ -69,7 +83,7 @@ export default function DistributionsTable({
         ),
       }),
     ];
-  }, [columnHelper, onDeleteClick, onInvalidateClick, onNameClick]);
+  }, [canAssign, columnHelper, onAssignClick, onDeleteClick, onInvalidateClick, onNameClick]);
 
   const fullColumns = useMemo(() => {
     return [
@@ -114,6 +128,14 @@ export default function DistributionsTable({
             {/*<IconButton height={'30px'} width={'30px'} onClick={() => onPinClick?.(info.row.original)}>*/}
             {/*  <PinIcon />*/}
             {/*</IconButton>*/}
+            <TooltipIconButton
+              tooltipContent={canAssign ? 'Assign to selected target' : 'Select a target first'}
+              icon={<TouchIcon width={20} height={20} />}
+              iconButtonProps={{
+                disabled: !canAssign,
+                onClick: () => onAssignClick?.(info.row.original),
+              }}
+            />
             <IconButton height={'30px'} width={'30px'} onClick={() => onInvalidateClick?.(info.row.original)}>
               <BlockIcon width={20} height={20} />
             </IconButton>
@@ -124,7 +146,7 @@ export default function DistributionsTable({
         ),
       }),
     ];
-  }, [columnHelper, onDeleteClick, onInvalidateClick, onNameClick]);
+  }, [canAssign, columnHelper, onAssignClick, onDeleteClick, onInvalidateClick, onNameClick]);
 
   return (
     <>
