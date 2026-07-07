@@ -17,15 +17,19 @@ import CreateRolloutFormContainer from '../../containers/create-rollout-form-con
 import StaticCard from '@/app/components/static-card';
 import ManageColumnsButton from '@/app/components/manage-columns-button';
 import { useRolloutsTableStore } from '@/stores/rollouts-table-store';
+import { useSession } from 'next-auth/react';
+import { hasPermission } from '@/utils/permissions';
 
 export default function RolloutsCard() {
   const [isCreateRolloutFormOpen, setIsCreateRolloutFormOpen] = useState(false);
+  const { data: session } = useSession();
   const selectedRollout = useRolloutsPageStore((state) => state.selectedRollout);
   const selectedDeployGroup = useRolloutsPageStore((state) => state.selectedDeployGroup);
   const tableType = useRolloutsPageStore((state) => state.tableType);
   const visibleColumns = useRolloutsTableStore((state) => state.visibleColumns);
   const setVisibleColumns = useRolloutsTableStore((state) => state.setVisibleColumns);
   const setTableType = useRolloutsPageStore((state) => state.setTableType);
+  const canCreateRollout = hasPermission(session?.user?.permissions, 'CREATE_ROLLOUT');
 
   const openForm = () => {
     setIsCreateRolloutFormOpen(true);
@@ -57,7 +61,7 @@ export default function RolloutsCard() {
             <IconButton width='30px' height='30px'>
               <SearchIcon />
             </IconButton>
-            <Button leftIcon={<PlusIcon width={18} height={18} />} onClick={openForm}>
+            <Button leftIcon={<PlusIcon width={18} height={18} />} onClick={openForm} disabled={!canCreateRollout} title={!canCreateRollout ? 'CREATE_ROLLOUT permission required' : undefined}>
               Create new rollout
             </Button>
             <ManageColumnsButton columns={visibleColumns} setVisibleColumns={setVisibleColumns} />
@@ -69,7 +73,7 @@ export default function RolloutsCard() {
           {tableType === 'deploy-group-targets' && selectedRollout && selectedDeployGroup && <RolloutDeployGroupDetailsContainer />}
         </Card.Body>
       </StaticCard>
-      <Modal size='xl' isOpen={isCreateRolloutFormOpen} onClose={closeForm}>
+      <Modal size='xl' isOpen={isCreateRolloutFormOpen && canCreateRollout} onClose={closeForm}>
         <Modal.Header>Create new rollout</Modal.Header>
         <Modal.Content>
           <div style={{ maxHeight: '82vh', overflow: 'auto' }}>

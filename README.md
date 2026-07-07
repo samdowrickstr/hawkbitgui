@@ -73,3 +73,14 @@ The app runs on port `3000` by default.
 ## Configuration
 
 You have to set in `.env` the URL for the Hawkbit Server by setting the `NEXT_PUBLIC_HAWKBIT_API_URL` variable.
+
+## Native hawkBit users and permissions
+
+HawkbitGUI authenticates against hawkBit's `/rest/v1/userinfo` endpoint and keeps
+the returned native hawkBit permissions in the NextAuth session. API calls are
+proxied with the logged-in user's own Basic credentials, so hawkBit enforces
+permissions and records audit fields against the real user.
+
+For the local STR stack, users are configured in the parent `docker-compose.yml`
+using `HAWKBIT_SECURITY_USER_*` environment variables. See
+`../README.md` and `../.env.example`.

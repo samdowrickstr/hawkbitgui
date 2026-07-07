@@ -102,6 +102,21 @@ $sidebar-collapsed: 60px;
         font-weight: 700;
       }
 
+      .userSummary {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+        line-height: 1.1;
+        color: $primary-text-color;
+        font-weight: 700;
+
+        small {
+          color: $secondary-text-color;
+          font-size: 12px;
+          font-weight: 600;
+        }
+      }
+
       .profile {
         width: 40px;
         height: 40px;

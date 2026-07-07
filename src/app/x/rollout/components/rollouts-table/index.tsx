@@ -20,6 +20,7 @@ import { VisibleColumn } from '@/types/utils/visible-column';
 import dayjs from 'dayjs';
 import { Pagination } from '@/types/utils/pagination';
 import { transformToColumnVisibility } from '@/utils/columns-visibility';
+import { hasPermission } from '@/utils/permissions';
 
 export type RolloutsTableProps = {
   rollouts: Rollout[];
@@ -35,6 +36,7 @@ export type RolloutsTableProps = {
   onCopyClick: (rollout: Rollout) => void;
   onDeleteClick: (rollout: Rollout) => void;
   onPageChange: (page: number) => void;
+  permissions?: string[];
 };
 
 export default function RolloutsTable({
@@ -51,8 +53,16 @@ export default function RolloutsTable({
   onCopyClick,
   onDeleteClick,
   onPageChange,
+  permissions = [],
 }: RolloutsTableProps) {
   const columnHelper = createColumnHelper<Rollout>();
+  const canStart = hasPermission(permissions, 'HANDLE_ROLLOUT');
+  const canApprove = hasPermission(permissions, 'APPROVE_ROLLOUT');
+  const canPause = hasPermission(permissions, 'HANDLE_ROLLOUT');
+  const canTriggerNextGroup = hasPermission(permissions, 'HANDLE_ROLLOUT');
+  const canEdit = hasPermission(permissions, 'UPDATE_ROLLOUT');
+  const canCopy = hasPermission(permissions, 'CREATE_ROLLOUT');
+  const canDelete = hasPermission(permissions, 'DELETE_ROLLOUT');
 
   const isActionAllowed = useCallback((action: RolloutActions, status: RolloutStatus) => {
     const allowedActionByStatus: Record<RolloutStatus, RolloutActions[]> = {
@@ -178,7 +188,7 @@ export default function RolloutsTable({
               tooltipContent='Run'
               iconButtonProps={{
                 onClick: () => onPlayClick(cell.row.original),
-                disabled: !isActionAllowed(RolloutActions.start, cell.row.original.status),
+                disabled: !canStart || !isActionAllowed(RolloutActions.start, cell.row.original.status),
               }}
             />
             <TooltipIconButton
@@ -186,7 +196,7 @@ export default function RolloutsTable({
               tooltipContent='Approve'
               iconButtonProps={{
                 onClick: () => onApproveClick(cell.row.original),
-                disabled: !isActionAllowed(RolloutActions.approve, cell.row.original.status),
+                disabled: !canApprove || !isActionAllowed(RolloutActions.approve, cell.row.original.status),
               }}
             />
             <TooltipIconButton
@@ -194,7 +204,7 @@ export default function RolloutsTable({
               tooltipContent='Pause'
               iconButtonProps={{
                 onClick: () => onPauseClick(cell.row.original),
-                disabled: !isActionAllowed(RolloutActions.pause, cell.row.original.status),
+                disabled: !canPause || !isActionAllowed(RolloutActions.pause, cell.row.original.status),
               }}
             />
             <TooltipIconButton
@@ -202,7 +212,7 @@ export default function RolloutsTable({
               tooltipContent='Trigger next group'
               iconButtonProps={{
                 onClick: () => onTriggerNextGroupClick(cell.row.original),
-                disabled: !isTriggerNextGroupAllowed(cell.row.original),
+                disabled: !canTriggerNextGroup || !isTriggerNextGroupAllowed(cell.row.original),
               }}
             />
             <TooltipIconButton
@@ -210,7 +220,7 @@ export default function RolloutsTable({
               tooltipContent='Edit'
               iconButtonProps={{
                 onClick: () => onEditClick(cell.row.original),
-                disabled: !isActionAllowed(RolloutActions.edit, cell.row.original.status),
+                disabled: !canEdit || !isActionAllowed(RolloutActions.edit, cell.row.original.status),
               }}
             />
             <TooltipIconButton
@@ -218,7 +228,7 @@ export default function RolloutsTable({
               tooltipContent='Copy'
               iconButtonProps={{
                 onClick: () => onCopyClick(cell.row.original),
-                disabled: !isActionAllowed(RolloutActions.copy, cell.row.original.status),
+                disabled: !canCopy || !isActionAllowed(RolloutActions.copy, cell.row.original.status),
               }}
             />
             <TooltipIconButton
@@ -226,7 +236,7 @@ export default function RolloutsTable({
               tooltipContent='Delete'
               iconButtonProps={{
                 onClick: () => onDeleteClick(cell.row.original),
-                disabled: !isActionAllowed(RolloutActions.delete, cell.row.original.status),
+                disabled: !canDelete || !isActionAllowed(RolloutActions.delete, cell.row.original.status),
               }}
             />
           </ActionIconButtons>
@@ -245,6 +255,13 @@ export default function RolloutsTable({
     onDeleteClick,
     isTriggerNextGroupAllowed,
     isActionAllowed,
+    canStart,
+    canApprove,
+    canPause,
+    canTriggerNextGroup,
+    canEdit,
+    canCopy,
+    canDelete,
   ]);
 
   return (

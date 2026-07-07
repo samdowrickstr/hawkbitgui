@@ -18,8 +18,10 @@ import { usePauseRollout } from '../../hooks/use-pause-rollout';
 import { useTriggerNextGroup } from '../../hooks/use-trigger-next-group';
 import { useApproveRollout } from '../../hooks/use-approve-rollout';
 import { useRolloutsTableStore } from '@/stores/rollouts-table-store';
+import { useSession } from 'next-auth/react';
 
 export default function RolloutsTableContainer() {
+  const { data: session } = useSession();
   const {
     data: rolloutsData,
     refetch,
@@ -159,6 +161,7 @@ export default function RolloutsTableContainer() {
           totalItems: totalRollouts,
         }}
         onPageChange={setPage}
+        permissions={session?.user?.permissions ?? []}
         {...actions}
       />
       {isEditRolloutFormOpen && (

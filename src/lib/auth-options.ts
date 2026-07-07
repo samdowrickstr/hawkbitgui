@@ -29,6 +29,7 @@ export const authOptions: AuthOptions = {
             id: response.data.tenant + response.data.username,
             tenant: response.data.tenant,
             username: response.data.username,
+            permissions: response.data.permissions ?? [],
             hawkbitAuth: Buffer.from(`${credentials?.username}:${credentials?.password}`).toString('base64'),
           };
         } catch (error) {
@@ -51,6 +52,7 @@ export const authOptions: AuthOptions = {
       if (user) {
         token.tenant = user.tenant;
         token.username = user.username;
+        token.permissions = user.permissions;
         token.hawkbitAuth = user.hawkbitAuth;
       }
       return token;
@@ -59,6 +61,7 @@ export const authOptions: AuthOptions = {
       if (session.user) {
         session.user.tenant = token.tenant;
         session.user.username = token.username;
+        session.user.permissions = token.permissions;
       }
       return session;
     },

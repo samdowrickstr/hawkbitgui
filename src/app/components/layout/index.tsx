@@ -16,6 +16,7 @@ import FolderIcon from '@/app/components/icons/folder-icon';
 import CircleDotIcon from '@/app/components/icons/circle-dot-icon';
 import { signOut, useSession } from 'next-auth/react';
 import { AppRoutes } from '@/utils/routes';
+import { hasPermission, primaryRoleLabel } from '@/utils/permissions';
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -23,19 +24,21 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const { data: session } = useSession();
 
+  const permissions = session?.user?.permissions ?? [];
   const navItems = [
-    { href: '/x/fleet', label: 'Fleet', icon: CircleDotIcon },
-    { href: '/x/deployment', label: 'Deployment', icon: RocketIcon },
-    { href: '/x/rollout', label: 'Rollout', icon: RolloutIcon },
-    { href: '/x/product-structure', label: 'Products', icon: FolderIcon },
-    { href: '/x/service-packs', label: 'Service Packs', icon: UploadIcon },
-    { href: '/x/target-filters', label: 'Target filters', icon: ClickIcon },
-    { href: '/x/distributions', label: 'Distributions', icon: WebIcon },
-    { href: '/x/upload', label: 'Upload', icon: UploadIcon },
-    { href: '/x/configuration', label: 'Configuration', icon: GearIcon },
+    { href: '/x/fleet', label: 'Fleet', icon: CircleDotIcon, visible: hasPermission(permissions, 'READ_TARGET') },
+    { href: '/x/deployment', label: 'Deployment', icon: RocketIcon, visible: hasPermission(permissions, ['READ_TARGET', 'READ_DISTRIBUTION_SET']) },
+    { href: '/x/rollout', label: 'Rollout', icon: RolloutIcon, visible: hasPermission(permissions, 'READ_ROLLOUT') },
+    { href: '/x/product-structure', label: 'Products', icon: FolderIcon, visible: hasPermission(permissions, ['READ_DISTRIBUTION_SET', 'READ_TARGET_TYPE']) },
+    { href: '/x/service-packs', label: 'Service Packs', icon: UploadIcon, visible: hasPermission(permissions, 'UPDATE_TARGET') },
+    { href: '/x/target-filters', label: 'Target filters', icon: ClickIcon, visible: hasPermission(permissions, 'READ_TARGET') },
+    { href: '/x/distributions', label: 'Distributions', icon: WebIcon, visible: hasPermission(permissions, 'READ_DISTRIBUTION_SET') },
+    { href: '/x/upload', label: 'Upload', icon: UploadIcon, visible: hasPermission(permissions, 'UPDATE_DISTRIBUTION_SET') },
+    { href: '/x/configuration', label: 'Configuration', icon: GearIcon, visible: hasPermission(permissions, 'READ_TENANT_CONFIGURATION') },
   ];
 
   const userInitial = session?.user?.username?.charAt(0)?.toUpperCase() || 'U';
+  const roleLabel = primaryRoleLabel(permissions);
 
   return (
     <div className={styles.layout}>
@@ -48,7 +51,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         </div>
 
         <nav className={styles.nav}>
-          {navItems.map((item, i) => (
+          {navItems.filter((item) => item.visible).map((item, i) => (
             <NavItem
               href={item.href}
               key={i}
@@ -75,6 +78,10 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 
           <div className={styles.headerActions}>
             <span className={styles.productName}>STR OTA Fleet</span>
+            <div className={styles.userSummary}>
+              <span>{session?.user?.username}</span>
+              <small>{roleLabel}</small>
+            </div>
             <div className={styles.profile}>{userInitial}</div>
           </div>
         </header>

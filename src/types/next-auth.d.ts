@@ -5,6 +5,7 @@ declare module 'next-auth' {
     interface User {
         tenant: string;
         username: string;
+        permissions: string[];
         hawkbitAuth: string;
     }
 
@@ -12,6 +13,7 @@ declare module 'next-auth' {
         user: {
             tenant: string;
             username: string;
+            permissions: string[];
         };
     }
 }
@@ -20,6 +22,7 @@ declare module 'next-auth/jwt' {
     interface JWT {
         tenant: string;
         username: string;
+        permissions: string[];
         hawkbitAuth: string;
     }
-} 
+}
