@@ -1,7 +1,7 @@
 import { AuthOptions } from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
-import axios from 'axios';
-import { environment } from '@/config/env';
+import { authenticateGuiUser } from '@/lib/admin-users';
+import { getHawkbitAuthForRole } from '@/lib/hawkbit-role-auth';
 
 export const authOptions: AuthOptions = {
   providers: [
@@ -12,30 +12,23 @@ export const authOptions: AuthOptions = {
         password: { label: 'Password', type: 'password' },
       },
       async authorize(credentials) {
-        try {
-          const response = await axios.get(`${environment.hawkbitApiUrl}/rest/v1/userinfo`, {
-            headers: {
-              Authorization: `Basic ${Buffer.from(`${credentials?.username}:${credentials?.password}`).toString('base64')}`,
-              Accept: 'application/json, application/hal+json',
-              'X-Requested-With': 'XMLHttpRequest',
-            },
-          });
+        const username = credentials?.username ?? '';
+        const password = credentials?.password ?? '';
+        const user = await authenticateGuiUser(username, password);
 
-          if (!response.data) {
-            return null;
-          }
-
-          return {
-            id: response.data.tenant + response.data.username,
-            tenant: response.data.tenant,
-            username: response.data.username,
-            permissions: response.data.permissions ?? [],
-            hawkbitAuth: Buffer.from(`${credentials?.username}:${credentials?.password}`).toString('base64'),
-          };
-        } catch (error) {
+        if (!user) {
           console.error('Authentication failed');
           return null;
         }
+
+        return {
+          id: user.id,
+          tenant: 'DEFAULT',
+          username: user.username,
+          role: user.role,
+          permissions: user.permissions,
+          hawkbitAuth: getHawkbitAuthForRole(user.role),
+        };
       },
     }),
   ],
@@ -52,6 +45,7 @@ export const authOptions: AuthOptions = {
       if (user) {
         token.tenant = user.tenant;
         token.username = user.username;
+        token.role = user.role;
         token.permissions = user.permissions;
         token.hawkbitAuth = user.hawkbitAuth;
       }
@@ -61,6 +55,7 @@ export const authOptions: AuthOptions = {
       if (session.user) {
         session.user.tenant = token.tenant;
         session.user.username = token.username;
+        session.user.role = token.role;
         session.user.permissions = token.permissions;
       }
       return session;

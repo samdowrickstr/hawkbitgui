@@ -1,0 +1,129 @@
+@use 'src/app/styles/variables' as *;
+
+.grid {
+  display: grid;
+  grid-template-columns: minmax(320px, 420px) minmax(0, 1fr);
+  gap: 20px;
+  width: 100%;
+  align-items: start;
+}
+
+.panel {
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 16px 0 rgba(60, 60, 100, 0.08);
+  padding: 20px;
+}
+
+.panelTitle {
+  margin: 0 0 16px;
+  color: $primary-text-color;
+  font-size: 20px;
+  font-weight: 800;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  color: $light-primary-text-color;
+  font-weight: 700;
+}
+
+.checkboxField {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: $light-primary-text-color;
+  font-weight: 700;
+}
+
+.actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.message {
+  color: $accent-color;
+  font-weight: 700;
+}
+
+.error {
+  color: $status-error;
+  font-weight: 700;
+}
+
+.protectedNotice {
+  border: 1px solid rgba($accent-color, 0.35);
+  border-radius: 8px;
+  background: rgba($accent-color, 0.08);
+  color: $primary-text-color;
+  padding: 10px 12px;
+  font-weight: 700;
+}
+
+.table {
+  display: grid;
+  gap: 8px;
+}
+
+.row,
+.header {
+  display: grid;
+  grid-template-columns: 1.2fr 0.9fr 0.7fr 1.3fr 1.3fr 1.2fr;
+  gap: 10px;
+  align-items: center;
+  padding: 10px 12px;
+  border-radius: 8px;
+}
+
+.header {
+  background: #e9f5fa;
+  color: $primary-text-color;
+  font-weight: 800;
+}
+
+.row {
+  border: 1px solid $border-disabled-color;
+  color: $light-primary-text-color;
+}
+
+.audit {
+  display: grid;
+  gap: 8px;
+  max-height: 360px;
+  overflow: auto;
+}
+
+.auditItem {
+  display: grid;
+  grid-template-columns: 190px 120px 160px 1fr;
+  gap: 10px;
+  padding: 10px 12px;
+  border: 1px solid $border-disabled-color;
+  border-radius: 8px;
+  color: $light-primary-text-color;
+}
+
+.muted {
+  color: $secondary-text-color;
+}
+
+@media (max-width: 1300px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+
+  .row,
+  .header,
+  .auditItem {
+    grid-template-columns: 1fr;
+  }
+}

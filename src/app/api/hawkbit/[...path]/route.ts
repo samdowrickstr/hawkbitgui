@@ -2,10 +2,96 @@ import { NextRequest, NextResponse } from 'next/server';
 import { environment } from '@/config/env';
 import axios, { AxiosError } from 'axios';
 import { getToken } from 'next-auth/jwt';
+import { hasPermission } from '@/utils/permissions';
+import { recordAuditEvent } from '@/lib/admin-users';
 
-const resolveAuthHeaderValue = async (request: NextRequest) => {
+const resolveToken = async (request: NextRequest) => {
   const token = await getToken({ req: request });
-  return token?.hawkbitAuth && typeof token.hawkbitAuth === 'string' ? token.hawkbitAuth : undefined;
+  return token?.hawkbitAuth && typeof token.hawkbitAuth === 'string' ? token : undefined;
+};
+
+const requiredPermissionForRequest = (method: string, path: string): string | null => {
+  const [resource, idOrAction, nestedAction] = path.split('/');
+  const action = nestedAction ?? idOrAction;
+
+  if (method === 'GET') {
+    if (resource === 'rollouts') return 'READ_ROLLOUT';
+    if (resource === 'targets' || resource === 'targettags' || resource === 'targetfilters') return 'READ_TARGET';
+    if (resource === 'targettypes') return 'READ_TARGET_TYPE';
+    if (resource === 'system') return 'READ_TENANT_CONFIGURATION';
+    if (resource === 'distributionsets' || resource === 'distributionsettags' || resource === 'distributionsettypes') return 'READ_DISTRIBUTION_SET';
+    if (resource === 'softwaremodules' || resource === 'softwaremoduletypes') return 'READ_DISTRIBUTION_SET';
+    return null;
+  }
+
+  if (resource === 'rollouts') {
+    if (method === 'POST' && action === 'approve') return 'APPROVE_ROLLOUT';
+    if (method === 'POST' && ['start', 'resume', 'pause', 'triggerNextGroup'].includes(action)) return 'HANDLE_ROLLOUT';
+    if (method === 'POST') return 'CREATE_ROLLOUT';
+    if (method === 'PUT') return 'UPDATE_ROLLOUT';
+    if (method === 'DELETE') return 'DELETE_ROLLOUT';
+  }
+
+  if (resource === 'targets' || resource === 'targettags' || resource === 'targetfilters' || resource === 'targettypes') {
+    if (method === 'POST') return 'CREATE_TARGET';
+    if (method === 'PUT') return 'UPDATE_TARGET';
+    if (method === 'DELETE') return 'DELETE_TARGET';
+  }
+
+  if (resource === 'system') {
+    return 'UPDATE_TENANT_CONFIGURATION';
+  }
+
+  if (resource === 'distributionsets' || resource === 'distributionsettags' || resource === 'softwaremodules') {
+    if (method === 'POST') return 'CREATE_DISTRIBUTION_SET';
+    if (method === 'PUT') return 'UPDATE_DISTRIBUTION_SET';
+    if (method === 'DELETE') return 'DELETE_DISTRIBUTION_SET';
+  }
+
+  if (resource === 'distributionsettypes' || resource === 'softwaremoduletypes') {
+    if (method === 'POST') return 'CREATE_DISTRIBUTION_SET_TYPE';
+    if (method === 'PUT') return 'UPDATE_DISTRIBUTION_SET_TYPE';
+    if (method === 'DELETE') return 'DELETE_DISTRIBUTION_SET_TYPE';
+  }
+
+  return null;
+};
+
+const assertAuthorized = async (request: NextRequest, method: string, path: string) => {
+  const token = await resolveToken(request);
+  if (!token) {
+    return {
+      token: null,
+      response: NextResponse.json(
+        {
+          exceptionClass: 'UnauthorizedError',
+          errorCode: 'UNAUTHORIZED',
+          message: 'Unauthorized',
+          info: {},
+        },
+        { status: 401 }
+      ),
+    };
+  }
+
+  const requiredPermission = requiredPermissionForRequest(method, path);
+  const permissions = Array.isArray(token.permissions) ? token.permissions : [];
+  if (requiredPermission && !hasPermission(permissions, requiredPermission)) {
+    return {
+      token: null,
+      response: NextResponse.json(
+        {
+          exceptionClass: 'ForbiddenError',
+          errorCode: 'FORBIDDEN',
+          message: `${requiredPermission} permission required`,
+          info: {},
+        },
+        { status: 403 }
+      ),
+    };
+  }
+
+  return { token, response: null };
 };
 
 const handleApiError = (error: unknown) => {
@@ -41,23 +127,14 @@ const handleApiError = (error: unknown) => {
 
 export async function GET(request: NextRequest, context: { params: Promise<{ path: string[] }> }) {
   const { params } = context;
-  const auth = await resolveAuthHeaderValue(request);
+  const path = (await params).path.join('/');
+  const { token, response: authError } = await assertAuthorized(request, 'GET', path);
 
-  if (!auth) {
-    return NextResponse.json(
-      {
-        exceptionClass: 'UnauthorizedError',
-        errorCode: 'UNAUTHORIZED',
-        message: 'Unauthorized',
-        info: {},
-      },
-      { status: 401 }
-    );
+  if (authError) {
+    return authError;
   }
 
   try {
-    const path = (await params).path.join('/');
-
     // Extract query params from the request URL
     const url = new URL(request.url);
     const queryParams: Record<string, string> = {};
@@ -71,7 +148,7 @@ export async function GET(request: NextRequest, context: { params: Promise<{ pat
 
     const axiosResponse = await axios.get(`${environment.hawkbitApiUrl}/rest/v1/${path}`, {
       headers: {
-        Authorization: `Basic ${auth}`,
+        Authorization: `Basic ${token?.hawkbitAuth}`,
         Accept: acceptHeader,
       },
       params: queryParams,
@@ -96,27 +173,19 @@ export async function GET(request: NextRequest, context: { params: Promise<{ pat
 
 export async function POST(request: NextRequest, context: { params: Promise<{ path: string[] }> }) {
   const { params } = context;
-  const auth = await resolveAuthHeaderValue(request);
+  const path = (await params).path.join('/');
+  const { token, response: authError } = await assertAuthorized(request, 'POST', path);
 
-  if (!auth) {
-    return NextResponse.json(
-      {
-        exceptionClass: 'UnauthorizedError',
-        errorCode: 'UNAUTHORIZED',
-        message: 'Unauthorized',
-        info: {},
-      },
-      { status: 401 }
-    );
+  if (authError) {
+    return authError;
   }
 
   try {
-    const path = (await params).path.join('/');
     const contentType = request.headers.get('content-type') || '';
 
     let body: FormData | unknown;
     const headers: Record<string, string> = {
-      Authorization: `Basic ${auth}`,
+      Authorization: `Basic ${token?.hawkbitAuth}`,
       Accept: 'application/json, application/hal+json',
     };
 
@@ -134,6 +203,12 @@ export async function POST(request: NextRequest, context: { params: Promise<{ pa
       headers,
     });
 
+    await recordAuditEvent({
+      actor: typeof token?.username === 'string' ? token.username : 'unknown',
+      action: `hawkbit:${request.method.toLowerCase()}`,
+      subject: path,
+    });
+
     return NextResponse.json(response.data);
   } catch (error) {
     return handleApiError(error);
@@ -142,30 +217,28 @@ export async function POST(request: NextRequest, context: { params: Promise<{ pa
 
 export async function PUT(request: NextRequest, context: { params: Promise<{ path: string[] }> }) {
   const { params } = context;
-  const auth = await resolveAuthHeaderValue(request);
+  const path = (await params).path.join('/');
+  const { token, response: authError } = await assertAuthorized(request, 'PUT', path);
 
-  if (!auth) {
-    return NextResponse.json(
-      {
-        exceptionClass: 'UnauthorizedError',
-        errorCode: 'UNAUTHORIZED',
-        message: 'Unauthorized',
-        info: {},
-      },
-      { status: 401 }
-    );
+  if (authError) {
+    return authError;
   }
 
   try {
-    const path = (await params).path.join('/');
     const body = await request.json();
 
     const response = await axios.put(`${environment.hawkbitApiUrl}/rest/v1/${path}`, body, {
       headers: {
-        Authorization: `Basic ${auth}`,
+        Authorization: `Basic ${token?.hawkbitAuth}`,
         Accept: 'application/json, application/hal+json',
         'Content-Type': 'application/json',
       },
+    });
+
+    await recordAuditEvent({
+      actor: typeof token?.username === 'string' ? token.username : 'unknown',
+      action: `hawkbit:${request.method.toLowerCase()}`,
+      subject: path,
     });
 
     return NextResponse.json(response.data);
@@ -176,27 +249,25 @@ export async function PUT(request: NextRequest, context: { params: Promise<{ pat
 
 export async function DELETE(request: NextRequest, context: { params: Promise<{ path: string[] }> }) {
   const { params } = context;
-  const auth = await resolveAuthHeaderValue(request);
+  const path = (await params).path.join('/');
+  const { token, response: authError } = await assertAuthorized(request, 'DELETE', path);
 
-  if (!auth) {
-    return NextResponse.json(
-      {
-        exceptionClass: 'UnauthorizedError',
-        errorCode: 'UNAUTHORIZED',
-        message: 'Unauthorized',
-        info: {},
-      },
-      { status: 401 }
-    );
+  if (authError) {
+    return authError;
   }
 
   try {
-    const path = (await params).path.join('/');
     const response = await axios.delete(`${environment.hawkbitApiUrl}/rest/v1/${path}`, {
       headers: {
-        Authorization: `Basic ${auth}`,
+        Authorization: `Basic ${token?.hawkbitAuth}`,
         Accept: 'application/json, application/hal+json',
       },
+    });
+
+    await recordAuditEvent({
+      actor: typeof token?.username === 'string' ? token.username : 'unknown',
+      action: `hawkbit:${request.method.toLowerCase()}`,
+      subject: path,
     });
 
     return NextResponse.json(response.data);

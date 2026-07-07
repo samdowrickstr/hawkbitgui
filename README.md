@@ -74,13 +74,21 @@ The app runs on port `3000` by default.
 
 You have to set in `.env` the URL for the Hawkbit Server by setting the `NEXT_PUBLIC_HAWKBIT_API_URL` variable.
 
-## Native hawkBit users and permissions
+## GUI users and hawkBit role mapping
 
-HawkbitGUI authenticates against hawkBit's `/rest/v1/userinfo` endpoint and keeps
-the returned native hawkBit permissions in the NextAuth session. API calls are
-proxied with the logged-in user's own Basic credentials, so hawkBit enforces
-permissions and records audit fields against the real user.
+HawkbitGUI authenticates against its own persistent GUI user database and keeps
+the user's role permissions in the NextAuth session. API calls are proxied to
+hawkBit through hidden native hawkBit role accounts:
 
-For the local STR stack, users are configured in the parent `docker-compose.yml`
-using `HAWKBIT_SECURITY_USER_*` environment variables. See
-`../README.md` and `../.env.example`.
+- GUI `admin` role -> hawkBit `admin`
+- GUI `operator` role -> hawkBit `operator`
+- GUI `approver` role -> hawkBit `approver`
+- GUI `viewer` role -> hawkBit `viewer`
+
+The proxy enforces the GUI user's permissions before forwarding requests. GUI
+audit events record login, user-management, and proxied hawkBit write actions
+against the real web username.
+
+For the local STR stack, hidden hawkBit role passwords are generated into the
+parent `.env` by `../start.ps1`. Live GUI users are managed from
+`/x/admin/users` and stored in the `hawkbitgui-data` Docker volume.

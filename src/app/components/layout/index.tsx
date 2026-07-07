@@ -35,6 +35,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     { href: '/x/distributions', label: 'Distributions', icon: WebIcon, visible: hasPermission(permissions, 'READ_DISTRIBUTION_SET') },
     { href: '/x/upload', label: 'Upload', icon: UploadIcon, visible: hasPermission(permissions, 'UPDATE_DISTRIBUTION_SET') },
     { href: '/x/configuration', label: 'Configuration', icon: GearIcon, visible: hasPermission(permissions, 'READ_TENANT_CONFIGURATION') },
+    { href: '/x/admin/users', label: 'Admin Users', icon: GearIcon, visible: hasPermission(permissions, 'ROLE_TENANT_ADMIN') },
   ];
 
   const userInitial = session?.user?.username?.charAt(0)?.toUpperCase() || 'U';
